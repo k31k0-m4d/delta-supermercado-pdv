@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - Delta Supermercado</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        body {
+            background: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .logo {
+            width: 120px;
+            margin: 0 auto 20px;
+        }
+
+        h1 {
+            margin-bottom: 24px;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 16px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #2196f3;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .error {
+            color: red;
+            margin-bottom: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <img src="{{ url_for('static', filename='logo_delta.png') }}" alt="Logo" class="logo">
+        <h1>🔐 Login</h1>
+        {% with messages = get_flashed_messages() %}
+          {% if messages and request.endpoint == 'login' %}
+       <div class="error">{{ messages[0] }}</div>
+          {% endif %}
+        {% endwith %}
+
+        <form method="POST">
+            <input type="text" name="usuario" placeholder="Usuário" required>
+            <input type="password" name="senha" placeholder="Senha" required>
+            <button type="submit">Entrar</button>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Recibo - Delta Supermercado</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f9f9f9;
+            padding: 40px;
+        }
+
+        .recibo-box {
+            background: white;
+            max-width: 600px;
+            margin: auto;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .logo img {
+            height: 100px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .info {
+            text-align: center;
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background: #f0f0f0;
+        }
+
+        .total {
+            text-align: right;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .botoes {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .btn {
+            background: #4caf50;
+            color: white;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 16px;
+            margin: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="recibo-box">
+        <div class="logo">
+            <img src="/static/logo_delta.png" alt="Logo Delta Supermercado">
+        </div>
+
+        <h1>🧾 Recibo</h1>
+        <div class="info">
+            <p>Data: {{ data }}</p>
+        </div>
+
+        <table>
+            <tr>
+                <th>Produto</th>
+                <th>Qtd</th>
+                <th>Preço</th>
+                <th>Total</th>
+            </tr>
+            {% for item in carrinho %}
+            <tr>
+                <td>{{ item[0] }}</td>
+                <td>{{ item[2] }}</td>
+                <td>R$ {{ '{:.2f}'.format(item[1]) }}</td>
+                <td>R$ {{ '{:.2f}'.format(item[1] * item[2]) }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <div class="total">
+            Total da Compra: R$ {{ '{:.2f}'.format(total) }}
+        </div>
+
+        <div class="botoes">
+            <button class="btn" onclick="window.print()">🖨️ Imprimir</button>
+            <a href="/home" class="btn">🏠 Voltar ao Início</a>
+        </div>
+    </div>
+</body>
+</html>

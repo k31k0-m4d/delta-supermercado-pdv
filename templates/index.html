@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <link rel="stylesheet" href="/static/style.css">
+    <meta charset="UTF-8">
+    <title>Delta Supermercado - PDV</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            padding: 30px;
+        }
+        h1 {
+            color: #333;
+        }
+        .importar-form {
+            margin-bottom: 20px;
+            padding: 10px;
+            background: #fff;
+            border: 1px solid #ccc;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+        .btn {
+            padding: 8px 16px;
+            background: #28a745;
+            border: none;
+            color: white;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .btn:hover {
+            background: #218838;
+        }
+        .msg {
+            background: #dff0d8;
+            color: #3c763d;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #d6e9c6;
+        }
+        .top-nav {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-nav">
+        <a class="btn" href="/vendas">Ver Vendas</a>
+    </div>
+
+    <h1>Delta Supermercado - PDV</h1>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="msg">
+          {{ messages[0] }}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <div class="importar-form">
+        <form action="/importar" method="POST" enctype="multipart/form-data">
+            <label>Importar produtos (.xls):</label>
+            <input type="file" name="file" required>
+            <button type="submit" class="btn">Importar</button>
+        </form>
+    </div>
+
+    <h2>Produtos disponíveis</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Preço (R$)</th>
+                <th>Tipo</th>
+                <th>Ação</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for produto in produtos %}
+            <tr>
+                <td>{{ produto[0] }}</td>
+                <td>{{ produto[1] }}</td>
+                <td>{{ "%.2f"|format(produto[2]) }}</td>
+                <td>{{ produto[3] }}</td>
+                <td><a class="btn" href="/vender/{{ produto[0] }}">Vender</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

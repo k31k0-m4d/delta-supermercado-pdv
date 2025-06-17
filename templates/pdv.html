@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>PDV - Delta Supermercado</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f2f5;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .flex-container {
+      display: flex;
+      gap: 30px;
+      flex-wrap: wrap;
+    }
+
+    .box {
+      flex: 1;
+      min-width: 340px;
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .box h2 {
+      margin-top: 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: left;
+    }
+
+    #tabelaProdutos tbody tr {
+      border-bottom: 1px solid #ccc;
+      transition: background 0.2s ease;
+    }
+
+    #tabelaProdutos tbody tr:hover {
+      background: #f9f9f9;
+    }
+
+    .floating-total {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: white;
+      padding: 16px 24px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+      font-size: 18px;
+      font-weight: bold;
+      color: #2e7d32;
+      z-index: 1000;
+    }
+
+    .quantidade-form {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .quantidade-form button {
+      padding: 4px 10px;
+    }
+
+    .quantidade-form span {
+      min-width: 20px;
+      text-align: center;
+    }
+
+    .carrinho-linha {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .carrinho-linha .produto {
+      flex: 2;
+    }
+
+    .carrinho-linha .preco-qtd {
+      flex: 2;
+      text-align: center;
+    }
+
+    .carrinho-linha .total {
+      flex: 1;
+      text-align: right;
+    }
+
+    .btn {
+      cursor: pointer;
+    }
+
+    #busca {
+      padding: 10px;
+      width: 100%;
+      max-width: 400px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <div class="logo" style="display: flex; align-items: center; margin-bottom: 20px;">
+    <img src="/static/logo_delta.png" alt="Logo Delta" style="height: 120px; margin-right: 15px;">
+    <h1>PDV - Nova Venda</h1>
+  </div>
+
+  <div style="margin-bottom: 20px;">
+    <input type="text" id="busca" placeholder="Buscar produto..." onkeyup="filtrarProdutos()">
+  </div>
+
+  <div class="flex-container">
+    <div class="box">
+      <h2>Todos os Produtos</h2>
+      <table id="tabelaProdutos">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Preço</th>
+            <th>Tipo</th>
+            <th>Ação</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in todos_produtos %}
+          <tr>
+            <td>{{ p[1] }}</td>
+            <td>R$ {{ '{:.2f}'.format(p[2]) }}</td>
+            <td>{{ p[3] }}</td>
+            <td>
+              <form action="/adicionar_carrinho" method="POST">
+                <input type="hidden" name="id" value="{{ p[0] }}">
+                <button class="btn btn-icon">➕</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="box">
+      <h2>🛒 Carrinho</h2>
+      {% if carrinho %}
+        <div>
+          <div class="carrinho-linha" style="font-weight: bold;">
+            <div class="produto">Produto</div>
+            <div class="preco-qtd">Preço + Qtd</div>
+            <div class="total">Total</div>
+          </div>
+          {% for item in carrinho %}
+          <div class="carrinho-linha">
+            <div class="produto">{{ item[0] }}</div>
+            <div class="preco-qtd">
+              <div style="margin-bottom: 4px;">R$ {{ '{:.2f}'.format(item[1]) }}</div>
+              <div class="quantidade-form">
+                <form method="POST" action="/atualizar_quantidade">
+                  <input type="hidden" name="nome" value="{{ item[0] }}">
+                  <input type="hidden" name="acao" value="subtrair">
+                  <button class="btn btn-cancel">➖</button>
+                </form>
+                <span>{{ item[2] }}</span>
+                <form method="POST" action="/atualizar_quantidade">
+                  <input type="hidden" name="nome" value="{{ item[0] }}">
+                  <input type="hidden" name="acao" value="adicionar">
+                  <button class="btn btn-icon">➕</button>
+                </form>
+              </div>
+            </div>
+            <div class="total">
+              <div>R$ {{ '{:.2f}'.format(item[1] * item[2]) }}</div>
+              <form method="POST" action="/remover_item" style="margin-top: 5px;">
+                <input type="hidden" name="nome" value="{{ item[0] }}">
+                <button class="btn btn-cancel">❌</button>
+              </form>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+
+        <form method="POST" action="/finalizar_venda" style="margin-top: 20px; text-align: right;">
+          <button class="btn btn-icon">✅ Finalizar Venda</button>
+        </form>
+      {% else %}
+        <p>Nenhum produto adicionado.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  {% if carrinho %}
+  <div class="floating-total">
+    Total: R$ {{ '{:.2f}'.format(total) }}
+  </div>
+  {% endif %}
+
+  <script>
+    function filtrarProdutos() {
+      const filtro = document.getElementById("busca").value.toLowerCase();
+      const linhas = document.querySelectorAll("#tabelaProdutos tbody tr");
+      linhas.forEach(linha => {
+        const texto = linha.innerText.toLowerCase();
+        linha.style.display = texto.includes(filtro) ? "table-row" : "none";
+      });
+    }
+  </script>
+</body>
+</html>

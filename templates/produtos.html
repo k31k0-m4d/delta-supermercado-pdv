@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Estoque - Delta Supermercado</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #fafafa;
+      padding: 40px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid #ccc;
+      text-align: left;
+    }
+
+    th {
+      background: #f2f2f2;
+    }
+
+    .btn {
+      background: #2196f3;
+      color: white;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 8px;
+      text-decoration: none;
+      margin-top: 20px;
+      display: inline-block;
+    }
+
+    .btn-danger {
+      background: #f44336;
+    }
+
+    form {
+      margin-top: 20px;
+    }
+
+    input, select {
+      padding: 8px;
+      margin-bottom: 10px;
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    .form-group {
+      margin-bottom: 10px;
+    }
+
+    hr {
+      margin: 30px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📦 Produtos em Estoque</h1>
+
+    <!-- Upload XLS -->
+    <form action="/importar" method="POST" enctype="multipart/form-data">
+      <div class="form-group">
+        <label>Importar planilha .xls:</label>
+        <input type="file" name="file" accept=".xls,.xlsx" required>
+      </div>
+      <button type="submit" class="btn">📁 Importar Arquivo</button>
+    </form>
+   <a href="/home" class="btn">🏠 Voltar ao Início</a>
+    <hr>
+
+    <!-- Adição manual -->
+    <form action="/adicionar_produto" method="POST">
+      <div class="form-group">
+        <label>Nome do Produto:</label>
+        <input type="text" name="nome" required>
+      </div>
+      <div class="form-group">
+        <label>Preço (ex: 12.50):</label>
+        <input type="number" step="0.01" name="preco" required>
+      </div>
+      <div class="form-group">
+        <label>Tipo:</label>
+        <input type="text" name="tipo" required>
+      </div>
+      <button type="submit" class="btn">➕ Adicionar Produto</button>
+    </form>
+
+    <hr>
+
+    <!-- Lista de produtos -->
+    <table>
+      <tr>
+        <th>Nome</th>
+        <th>Preço</th>
+        <th>Tipo</th>
+      </tr>
+      {% for p in produtos %}
+      <tr>
+        <td>{{ p[1] }}</td>
+        <td>R$ {{ '{:.2f}'.format(p[2]) }}</td>
+        <td>{{ p[3] }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+
+    
+  </div>
+</body>
+</html>

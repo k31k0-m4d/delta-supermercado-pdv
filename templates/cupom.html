@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Cupom #{{ cupom_id }} - Detalhes</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f9f9f9;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #eee;
+            text-align: left;
+        }
+
+        th {
+            background: #f0f0f0;
+        }
+
+        .total {
+            text-align: right;
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .btn {
+            background: #2196f3;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            display: inline-block;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧾 Detalhes do Cupom #{{ cupom_id }}</h1>
+
+        <table>
+            <tr>
+                <th>Produto</th>
+                <th>Preço</th>
+                <th>Qtd</th>
+                <th>Total</th>
+            </tr>
+            {% for item in produtos %}
+            <tr>
+                <td>{{ item.nome }}</td>
+                <td>R$ {{ '{:.2f}'.format(item.preco) }}</td>
+                <td>{{ item.qtd }}</td>
+                <td>R$ {{ '{:.2f}'.format(item.preco * item.qtd) }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <div class="total">
+            Total do Cupom: R$ {{ '{:.2f}'.format(total) }}
+        </div>
+
+        <a href="/vendas" class="btn">🔙 Voltar para Lista</a>
+    </div>
+</body>
+</html>

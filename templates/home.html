@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <link rel="stylesheet" href="/static/style.css">
+    <meta charset="UTF-8">
+    <title>Home - Delta Supermercado</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        .btn {
+            padding: 10px 20px;
+            margin-right: 10px;
+            background: #1e88e5;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s ease;
+        }
+        .btn:hover {
+            background: #1565c0;
+        }
+        .section {
+            margin-top: 30px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .row {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .box {
+            flex: 1;
+            min-width: 300px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            padding: 8px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .logo img {
+            height: 300px;
+            margin-right: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="logo">
+        <img src="/static/logo_delta.png" alt="Logo Delta Supermercado">
+        <h1>Delta Supermercado - Painel</h1>
+    </div>
+
+    <div style="margin-bottom: 20px;">
+        <a href="/pdv" class="btn">+ NOVA VENDA</a>
+        <a href="/produtos" class="btn">📦 Estoque / Produtos</a>
+    </div>
+
+    <div class="row">
+        <div class="box section">
+            <h2>Últimas Vendas</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Produto</th>
+                        <th>Valor</th>
+                        <th>Data</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for venda in ultimas %}
+                    <tr>
+                        <td>{{ venda[1] }}</td>
+                        <td>R$ {{ "%.2f"|format(venda[2]) }}</td>
+                        <td>{{ venda[4] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+             <div style="text-align: right; margin-top: 10px;">
+        <a href="/vendas" class="btn">📄 Ver Todas</a>
+             </div>
+        </div>
+
+        <div class="box section">
+            <h2>Relatório de Vendas (Últimos 7 dias)</h2>
+            <canvas id="graficoVendas"></canvas>
+        </div>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('graficoVendas').getContext('2d');
+        const grafico = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: {{ dias|safe }},
+                datasets: [{
+                    label: 'Total vendido por dia (R$)',
+                    data: {{ totais|safe }},
+                    backgroundColor: 'rgba(30, 136, 229, 0.7)',
+                }]
+            },
+            options: {
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
